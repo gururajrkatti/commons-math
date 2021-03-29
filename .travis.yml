@@ -27,6 +27,19 @@ jdk:
 env:
   - MAVEN_OPTS="-Xmx6g -Xms2g"
 
+before_install:
+# For ppc64le install openjdk8 explicitly
+  - |
+    if [ "$TRAVIS_CPU_ARCH" = "ppc64le" ]; then
+     sudo wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | sudo apt-key add -
+     sudo add-apt-repository --yes https://adoptopenjdk.jfrog.io/adoptopenjdk/deb/
+     sudo rm -rf /var/lib/apt/lists/*
+     sudo apt-get update -y
+     sudo apt install adoptopenjdk-8-hotspot -y
+     sudo apt remove adoptopenjdk-11-hotspot -y
+     java -version
+    fi
+
 # only build master and the MATH_3_X branch
 branches:
   only:
